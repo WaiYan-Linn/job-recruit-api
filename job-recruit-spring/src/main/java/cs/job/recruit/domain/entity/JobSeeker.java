@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 
@@ -16,7 +17,6 @@ import lombok.Data;
 public class JobSeeker {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     
     @Column(nullable = false)
@@ -30,6 +30,7 @@ public class JobSeeker {
     private String profileSummary;
     
     @OneToOne
+    @MapsId
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 }

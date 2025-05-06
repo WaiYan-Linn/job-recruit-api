@@ -1,5 +1,4 @@
 package cs.job.recruit.security;
-
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;

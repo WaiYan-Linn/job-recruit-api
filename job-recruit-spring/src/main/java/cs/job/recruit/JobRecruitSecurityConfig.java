@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +18,7 @@ import cs.job.recruit.security.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
+@EnableMethodSecurity  // For Spring Security 6+
 @EnableWebSecurity
 @RequiredArgsConstructor
 @PropertySource(value ="classpath:/token.properties")
@@ -33,8 +35,7 @@ public class JobRecruitSecurityConfig {
 		
 		http.authorizeHttpRequests(request -> {
 			request.requestMatchers("/security/**").permitAll();
-			request.requestMatchers("/anonymous/**").permitAll();
-			request.requestMatchers("/employer/**").hasAuthority("EMPLOYER");
+			request.requestMatchers("/employer/**", "/jobs/**").hasRole("EMPLOYER"); // ✅ FIXED
 			request.anyRequest().authenticated();
 		});
 		

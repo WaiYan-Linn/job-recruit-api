@@ -2,6 +2,8 @@ package cs.job.recruit.security;
 
 import java.io.IOException;
 
+import org.hibernate.property.access.internal.AccessStrategyHelper;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -26,12 +28,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		
 		var accessToken = request.getHeader("Authorization");
-		if(!StringUtils.hasLength(accessToken)) {
+		if(StringUtils.hasLength(accessToken)) {
 			var authentication = tokenProvider.parse(Type.Access, accessToken);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-
+			
+			System.out.println(authentication+ "yo");
 		}
-		
 		filterChain.doFilter(request, response);
 
 	}

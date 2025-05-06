@@ -1,7 +1,7 @@
 package cs.job.recruit.utils;
 
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ public class AdminUserInitializer {
 	private final AccountRepository accountRepo;
 	
 	@Transactional
-	@EventListener(classes = ContextRefreshedEvent.class)
+	@EventListener(ApplicationReadyEvent.class)
 	public void initialize() {
 		
 		if(accountRepo.count() == 0) {

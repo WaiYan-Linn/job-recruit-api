@@ -21,7 +21,7 @@ public class ApiUserDetailsService implements UserDetailsService{
 				.map(account -> User.builder()
 						.username(username)
 						.password(account.getPassword())
-						.authorities(account.getRole().name())
+						.authorities("ROLE_" + account.getRole().name())
 						.build())
 				.orElseThrow(() -> new UsernameNotFoundException("Please check your login id."));
 	}
