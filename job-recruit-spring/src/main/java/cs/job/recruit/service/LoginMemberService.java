@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cs.job.recruit.domain.entity.Employer;
-import cs.job.recruit.respository.EmployerRepo;
+import cs.job.recruit.domain.repository.EmployerRepo;
 import lombok.RequiredArgsConstructor;
 
 @Service

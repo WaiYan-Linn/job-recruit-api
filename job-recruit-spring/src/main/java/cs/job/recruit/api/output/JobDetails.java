@@ -3,6 +3,7 @@ package cs.job.recruit.api.output;
 import java.time.LocalDate;
 
 import cs.job.recruit.domain.entity.Employer;
+import cs.job.recruit.domain.entity.Employer_;
 import cs.job.recruit.domain.entity.Job;
 import cs.job.recruit.domain.entity.Job.Category;
 import cs.job.recruit.domain.entity.Job.Experience;
@@ -14,15 +15,16 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
 
-public record JobDetails(String title, Category category, String location, JobType jobType, WorkMode workMode,
+public record JobDetails(Long id,String title, Category category, String location, JobType jobType, WorkMode workMode,
 		Experience experience, Double salaryMin, Double salaryMax, String description, String requirements,
-		String benefits, LocalDate deadline, String applicationEmail, LocalDate postedAt, Employer employer) {
+		String benefits, LocalDate deadline, String applicationEmail, LocalDate postedAt, EmployerBasic employer) {
 
 	public static void select(CriteriaBuilder cb, CriteriaQuery<JobDetails> cq, Root<Job> root) {
 		
 		Join<Job, Employer> employerJoin = root.join(Job_.employer);
         
         cq.multiselect(
+        	root.get(Job_.id),
             root.get(Job_.title),         // String
             root.get(Job_.category),      // Category enum
             root.get(Job_.location),      // String
@@ -37,7 +39,12 @@ public record JobDetails(String title, Category category, String location, JobTy
             root.get(Job_.deadline),      // LocalDate
             root.get(Job_.applicationEmail),// String
             root.get(Job_.postedAt),      // LocalDate
-            employerJoin );                 // Employer entity
+            cb.construct(EmployerBasic.class,
+                    employerJoin.get(Employer_.id),
+                    employerJoin.get(Employer_.companyName),
+                    employerJoin.get(Employer_.website),
+                    employerJoin.get(Employer_.profilePictureUrl)
+                ));            // Employer entity
 	}
 
 }

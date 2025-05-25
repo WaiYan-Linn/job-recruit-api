@@ -1,4 +1,4 @@
-package cs.job.recruit.respository;
+package cs.job.recruit.domain.repository;
 
 import java.util.Optional;
 

@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("security")
-public class SecurityApi {
+public class SecurityController {
 
 	private final TokenManagementService tokenService;
 	private final MemberSignUpService signUpService;

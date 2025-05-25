@@ -35,6 +35,9 @@ public class Account {
     @Column
     private String phone;
     
+    @Column
+    private String address;
+    
     @Column(nullable = false)
     private boolean activated = false;
     

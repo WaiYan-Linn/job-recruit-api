@@ -1,7 +1,10 @@
 package cs.job.recruit.domain.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,7 +13,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -50,6 +56,12 @@ public class Job {
     @ManyToOne
     @JoinColumn(name = "employer_id")
     private Employer employer;
+    
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
+    private List<Application> applications = new ArrayList<>();
+
     
     public enum JobType {
         FULL_TIME,

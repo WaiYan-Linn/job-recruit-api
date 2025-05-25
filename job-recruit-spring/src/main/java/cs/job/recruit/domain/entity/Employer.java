@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,6 +30,14 @@ public class Employer {
     
     @Column
     private String website;
+    
+    @Column
+    private String profilePictureUrl;
+    
+    @JdbcTypeCode( SqlTypes.LONGVARCHAR )
+    @Column(columnDefinition = "TEXT")
+    private String aboutUs;
+
     
     @OneToOne
     @MapsId

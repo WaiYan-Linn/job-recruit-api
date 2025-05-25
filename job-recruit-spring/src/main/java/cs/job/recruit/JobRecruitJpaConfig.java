@@ -8,7 +8,10 @@ import cs.job.recruit.domain.BaseRepositoryImpl;
 
 @Configuration
 @EnableJpaAuditing
-@EnableJpaRepositories(repositoryBaseClass = BaseRepositoryImpl.class)
+@EnableJpaRepositories(
+	    basePackages        = "cs.job.recruit.domain",   // ← where your JobRepository lives
+	    repositoryBaseClass = BaseRepositoryImpl.class
+	)
 public class JobRecruitJpaConfig {
 
 }

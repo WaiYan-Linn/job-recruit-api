@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cs.job.recruit.api.input.RefreshForm;
 import cs.job.recruit.api.input.SignInForm;
 import cs.job.recruit.api.output.AccountInfo;
-import cs.job.recruit.respository.AccountRepository;
+import cs.job.recruit.domain.repository.AccountRepository;
 import cs.job.recruit.security.JwtTokenProvider;
 import cs.job.recruit.security.JwtTokenProvider.Type;
 import static cs.job.recruit.utils.EntityOperationUtils.safeCall;

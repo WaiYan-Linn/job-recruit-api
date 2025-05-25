@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cs.job.recruit.domain.entity.Account;
 import cs.job.recruit.domain.entity.Account.Role;
-import cs.job.recruit.respository.AccountRepository;
+import cs.job.recruit.domain.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 
 @Configuration

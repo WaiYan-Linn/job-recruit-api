@@ -53,9 +53,9 @@ public class JwtTokenProvider {
 			var username = jwt.getPayload().getSubject();
 			var role = jwt.getPayload().get("rol", String.class);
 			var authorities = Arrays.stream(role.split(",")).map(a -> new SimpleGrantedAuthority(a)).toList();
-			
-			return UsernamePasswordAuthenticationToken.authenticated(username,null,authorities); 
-		} catch (Exception e) {
+
+			return UsernamePasswordAuthenticationToken.authenticated(username, null, authorities);
+	} catch (Exception e) {
 			// TODO: handle exception
 		}
 		return null;

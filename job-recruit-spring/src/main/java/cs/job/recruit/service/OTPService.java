@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cs.job.recruit.domain.entity.OTP;
-import cs.job.recruit.respository.OTPRepository;
+import cs.job.recruit.domain.repository.OTPRepository;
 import jakarta.transaction.Transactional;
 
 @Service

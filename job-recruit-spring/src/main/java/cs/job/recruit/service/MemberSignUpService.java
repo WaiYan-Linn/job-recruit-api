@@ -9,7 +9,7 @@ import cs.job.recruit.api.output.SignUpResult;
 import cs.job.recruit.domain.entity.Account;
 import cs.job.recruit.domain.entity.Employer;
 import cs.job.recruit.domain.entity.JobSeeker;
-import cs.job.recruit.respository.AccountRepository;
+import cs.job.recruit.domain.repository.AccountRepository;
 import cs.job.recruit.utils.ApiBusinessException;
 import lombok.RequiredArgsConstructor;
 
