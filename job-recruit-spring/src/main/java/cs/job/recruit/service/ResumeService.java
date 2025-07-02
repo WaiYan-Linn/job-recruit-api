@@ -23,7 +23,7 @@ public class ResumeService {
 	private final String root = Paths.get("/uploads/resumes").toString();
 	
 	@Transactional
-	public String storeResume(String accountId, MultipartFile resumeFile) throws IOException {
+	public String storeResume(String email, MultipartFile resumeFile) throws IOException {
 	    // 1. Validate non-empty
 	    if (resumeFile.isEmpty()) {
 	        throw new IllegalArgumentException("Cannot upload empty file");
@@ -46,7 +46,7 @@ public class ResumeService {
 
 	    // 4. Build a safe, unique filename
 	    String filename = String.format("resume_%s_%d%s",
-	        accountId,
+	        email,
 	        System.currentTimeMillis(),
 	        ext
 	    );

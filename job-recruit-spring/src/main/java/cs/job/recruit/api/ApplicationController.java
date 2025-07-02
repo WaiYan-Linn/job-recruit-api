@@ -1,9 +1,9 @@
 package cs.job.recruit.api;
 
-import java.security.Principal;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,16 +20,21 @@ public class ApplicationController {
 	@Autowired
 	private ApplicationService applicationService;
 
-	 
-	    @PostMapping(value = "/apply/{jobId}", consumes = "multipart/form-data")
-	    public ResponseEntity<String> applyToJob(
-	            @PathVariable Long jobId,
-                @RequestParam("resumeFile") MultipartFile resumeFile,
-	            Principal principal
-	    ) {
-	        // principal.getName() should be the Account ID (UUID string)
-	        applicationService.applyWithResume(principal.getName(), jobId, resumeFile);
-	        return ResponseEntity.ok("Application submitted successfully");
-	    }
+	@PostMapping(value = "/apply/{jobId}", consumes = "multipart/form-data")
+	public ResponseEntity<String> applyToJob(Authentication authentication, @PathVariable Long jobId,
+			@RequestParam("resumeFile") MultipartFile resumeFile) {
+		String email = authentication.getName();
+
+		// principal.getName() should be the Account ID (UUID string)
+		applicationService.applyWithResume(email, jobId, resumeFile);
+		return ResponseEntity.ok("Application submitted successfully");
+	}
+	
+	@GetMapping("/{id}/has-applied")
+	public boolean hasApplied(@PathVariable long id, Authentication authentication) {
+	    String email = authentication.getName();
+	    return applicationService.hasApplied(email, id);
+	}
+
 
 }

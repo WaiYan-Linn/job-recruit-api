@@ -2,8 +2,11 @@ package cs.job.recruit.service;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.management.RuntimeErrorException;
 
@@ -14,9 +17,14 @@ import org.springframework.stereotype.Service;
 import cs.job.recruit.api.input.JobRequest;
 import cs.job.recruit.api.input.JobSearch;
 import cs.job.recruit.api.output.JobDetails;
+import cs.job.recruit.api.output.JobDetailsResponse;
 import cs.job.recruit.api.output.PageResult;
+import cs.job.recruit.domain.entity.Application;
 import cs.job.recruit.domain.entity.Job;
+import cs.job.recruit.domain.entity.JobSeeker;
+import cs.job.recruit.domain.repository.ApplicationRepository;
 import cs.job.recruit.domain.repository.JobRepository;
+import cs.job.recruit.domain.repository.JobSeekerRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -28,6 +36,8 @@ public class JobManagementService {
 
 	private final JobRepository jobRepository;
 	private final LoginMemberService loginMemberService;
+	private final JobSeekerRepository jobSeekerRepository;
+	private final ApplicationRepository applicationRepository;
 
 	public PageResult<JobDetails> search(JobSearch search, int page, int size) {
 		return jobRepository.search(queryFunc(search), countFunc(search), page, size);
@@ -38,8 +48,9 @@ public class JobManagementService {
 			var cq = cb.createQuery(JobDetails.class);
 			var root = cq.from(Job.class);
 			JobDetails.select(cb, cq, root);
-			cq.where(search.where(cb, root))
-			.orderBy(cb.desc(root.get("postedAt")));
+			cq.where(search.where(cb, root)).orderBy(cb.desc(root.get("postedAt")));
+			
+			
 
 			return cq;
 		};
@@ -94,7 +105,7 @@ public class JobManagementService {
 			all[orig.length] = byEmployer;
 
 			// 4) pass the combined array to where()
-			cq.where(all);
+			cq.where(all).orderBy(cb.desc(root.get("postedAt")));
 
 			return cq;
 		};
@@ -121,8 +132,78 @@ public class JobManagementService {
 	}
 
 	public PageResult<JobDetails> getJobsByCompany(UUID employerId, int page, int size) {
-	    JobSearch search = new JobSearch(null, null, null, employerId); // Only filter by employerId
-	    return this.search(search, page, size); // Reuses your existing search method
+		JobSearch search = new JobSearch(null, null, null, employerId); // Only filter by employerId
+		return this.search(search, page, size); // Reuses your existing search method
+	}
+
+	public PageResult<JobDetails> searchByMaxSalary(JobSearch search, int page, int size) {
+		return jobRepository.search(maxSalaryQueryFunc(search), countFunc(search), page, size);
+	}
+
+	private Function<CriteriaBuilder, CriteriaQuery<JobDetails>> maxSalaryQueryFunc(JobSearch search) {
+		return cb -> {
+			var cq = cb.createQuery(JobDetails.class);
+			var root = cq.from(Job.class);
+			JobDetails.select(cb, cq, root);
+
+			// Get dynamic search predicates
+			Predicate[] searchPredicates = search.where(cb, root);
+
+			// Create deadline predicate
+			Predicate deadlinePredicate = cb.greaterThanOrEqualTo(root.get("deadline"), LocalDate.now());
+
+			// Combine all predicates into one array
+			Predicate[] allPredicates = Arrays.copyOf(searchPredicates, searchPredicates.length + 1);
+			allPredicates[searchPredicates.length] = deadlinePredicate;
+
+			// Apply where clause
+			cq.where(cb.and(allPredicates)).orderBy(cb.desc(root.get("salaryMax")));
+
+			return cq;
+		};
+	}
+
+	public PageResult<JobDetailsResponse> searchWithApplyStatus(JobSearch search, int page, int size, String email) {
+	    // 1. Perform normal search
+	    PageResult<JobDetails> jobPage = search(search, page, size);
+	    
+	    if (email == null) {
+	        List<JobDetailsResponse> defaultList = jobPage.contents().stream()
+	            .map(job -> new JobDetailsResponse(job, false))
+	            .toList();
+
+	        return new PageResult<>(
+	            defaultList,
+	            jobPage.totalItems(),
+	            jobPage.size(),
+	            jobPage.currentPage()
+	        );
+	    }
+
+	    // 2. Get job seeker
+	    JobSeeker seeker = jobSeekerRepository
+	        .findOneByAccountEmail(email)
+	        .orElseThrow(() -> new IllegalStateException("JobSeeker not found"));
+
+	    // 3. Extract job IDs
+	    List<Long> jobIds = jobPage.contents().stream()
+	        .map(JobDetails::id)
+	        .toList();
+
+	    // 4. Find applications by seeker and job IDs
+	    List<Application> applications = applicationRepository
+	        .findByJobSeekerAndJobIdIn(seeker, jobIds);
+
+	    Set<Long> appliedJobIds = applications.stream()
+	        .map(app -> app.getJob().getId())
+	        .collect(Collectors.toSet());
+
+	    // 5. Wrap with hasApplied
+	    List<JobDetailsResponse> wrappedList = jobPage.contents().stream()
+	        .map(job -> new JobDetailsResponse(job, appliedJobIds.contains(job.id())))
+	        .toList();
+
+	    return new PageResult<>(wrappedList,jobPage.totalItems() ,jobPage.size(), jobPage.currentPage());
 	}
 
 

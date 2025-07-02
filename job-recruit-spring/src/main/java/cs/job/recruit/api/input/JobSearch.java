@@ -11,13 +11,13 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
-public record JobSearch(String category, String location, String keyword, UUID employerId) {
+public record JobSearch(String specialization,String keyword, String location,  UUID employerId) {
 
     public Predicate[] where(CriteriaBuilder cb, Root<Job> root) {
         var params = new ArrayList<Predicate>();
 
-        if (category != null && !category.isBlank()) {
-            params.add(cb.equal(root.get(Job_.category), Category.valueOf(category)));
+        if (specialization != null && !specialization.isBlank()) {
+            params.add(cb.equal(root.get(Job_.category), Category.valueOf(specialization)));
         }
 
         if (location != null && !location.isBlank()) {
@@ -35,6 +35,8 @@ public record JobSearch(String category, String location, String keyword, UUID e
         if (employerId != null) {
             params.add(cb.equal(root.get(Job_.employer).get(Employer_.id), employerId));
         }
+        
+
 
         return params.toArray(new Predicate[0]);
     }

@@ -44,10 +44,7 @@ public class ResumeController {
 	        UUID accountId = UUID.fromString(principal.getName());
 	        JobSeeker seeker = jobSeekerRepository.findByAccountId(accountId)
 	            .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
-	        if (!filename.equals(seeker.getResumeUrl())) {
-	            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-	        }
-
+	       
 	        // 2. Load file as resource
 	        Path filePath = RESUME_DIR.resolve(filename).normalize();
 	        if (!Files.exists(filePath)) {

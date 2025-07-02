@@ -4,7 +4,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -44,9 +48,18 @@ public class Job {
     private Double salaryMin;
     private Double salaryMax;
     
+    @JdbcTypeCode( SqlTypes.LONGVARCHAR )
+    @Column(columnDefinition = "TEXT")
     private String description;
+    
+    @JdbcTypeCode( SqlTypes.LONGVARCHAR )
+    @Column(columnDefinition = "TEXT")
     private String requirements;
+    
+    @JdbcTypeCode( SqlTypes.LONGVARCHAR )
+    @Column(columnDefinition = "TEXT")
     private String benefits;
+    
     private LocalDate deadline;
     private String applicationEmail;
 

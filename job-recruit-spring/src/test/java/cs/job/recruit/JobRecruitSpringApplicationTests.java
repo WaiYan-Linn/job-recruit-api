@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -105,7 +104,6 @@ import cs.job.recruit.domain.repository.JobSeekerRepository;
 
 	        // set that on the JobSeeker record
 	        JobSeeker js = jobSeekerRepository.findByAccountId(seekerId).get();
-	        js.setResumeUrl(filename);
 	        jobSeekerRepository.save(js);
 
 	        mvc.perform(get("/api/jobseeker/resume/{filename}", filename)

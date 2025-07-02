@@ -35,8 +35,10 @@ public class JobRecruitSecurityConfig {
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 		http.authorizeHttpRequests(request -> {
-			request.requestMatchers("/security/**","/jobs/*","/jobs/company/**","/pictures/**", "/employer/*").permitAll();
-			request.requestMatchers("/employer/**", "/jobs/post/create").hasRole("EMPLOYER");// ✅ FIXED
+			request.requestMatchers("/security/**","/jobs/*","/jobs/company/**","/jobs/salaries/**","/pictures/**", "/employer/*").permitAll();
+			request.requestMatchers("/employer/**", "/jobs/post/create").hasRole("EMPLOYER");
+			request.requestMatchers("/jobseeker/**","/app/**").hasRole("JOBSEEKER");
+
 			request.anyRequest().authenticated();
 		});
 
