@@ -146,18 +146,14 @@ public class JobManagementService {
 			var root = cq.from(Job.class);
 			JobDetails.select(cb, cq, root);
 
-			// Get dynamic search predicates
-			Predicate[] searchPredicates = search.where(cb, root);
+		
 
 			// Create deadline predicate
 			Predicate deadlinePredicate = cb.greaterThanOrEqualTo(root.get("deadline"), LocalDate.now());
 
-			// Combine all predicates into one array
-			Predicate[] allPredicates = Arrays.copyOf(searchPredicates, searchPredicates.length + 1);
-			allPredicates[searchPredicates.length] = deadlinePredicate;
-
+			
 			// Apply where clause
-			cq.where(cb.and(allPredicates)).orderBy(cb.desc(root.get("salaryMax")));
+			cq.where(cb.and(deadlinePredicate)).orderBy(cb.desc(root.get("salaryMax")));
 
 			return cq;
 		};

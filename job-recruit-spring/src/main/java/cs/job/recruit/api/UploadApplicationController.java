@@ -15,7 +15,7 @@ import cs.job.recruit.service.ApplicationService;
 
 @RestController
 @RequestMapping("/app")
-public class ApplicationController {
+public class UploadApplicationController {
 
 	@Autowired
 	private ApplicationService applicationService;

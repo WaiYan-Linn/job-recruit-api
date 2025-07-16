@@ -15,11 +15,13 @@ public class JobRecruitWebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/uploads/**")
-				.addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/");
-
-		registry.addResourceHandler("/pictures/**")
-				.addResourceLocations("file:" + System.getProperty("user.dir") + "/pictures/");
-
+	  registry
+	    .addResourceHandler("/uploads/**")
+	    .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/");
+	  
+	  registry
+	    .addResourceHandler("/pictures/**")
+	    .addResourceLocations("file:" + System.getProperty("user.dir") + "/pictures/");
 	}
+
 }

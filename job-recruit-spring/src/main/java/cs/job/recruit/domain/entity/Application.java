@@ -41,8 +41,6 @@ public class Application {
 
     private String resumeUrl;
 
-    private String coverLetter;
-
     public enum Status {
         NEW,
         REVIEWED,
