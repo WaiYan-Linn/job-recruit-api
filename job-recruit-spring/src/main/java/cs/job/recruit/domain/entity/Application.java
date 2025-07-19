@@ -43,7 +43,6 @@ public class Application {
 
     public enum Status {
         NEW,
-        REVIEWED,
         INTERVIEW,
         HIRED,
         REJECTED

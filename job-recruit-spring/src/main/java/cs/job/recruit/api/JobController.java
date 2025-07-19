@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ import cs.job.recruit.api.input.JobSearch;
 import cs.job.recruit.api.output.JobDetails;
 import cs.job.recruit.api.output.JobDetailsResponse;
 import cs.job.recruit.api.output.PageResult;
+import cs.job.recruit.domain.entity.Job;
 import cs.job.recruit.service.JobManagementService;
 
 @RestController
@@ -77,5 +79,11 @@ public class JobController {
 	public JobDetails searchJobById(@PathVariable long id) {
 		return service.getJobDetails(id);
 	}
+	
+    @PatchMapping("/{id}/close")
+    public ResponseEntity<String> closeJob(@PathVariable Long id) {
+         service.closeJob(id);
+        return ResponseEntity.ok("Done");
+    }
 
 }

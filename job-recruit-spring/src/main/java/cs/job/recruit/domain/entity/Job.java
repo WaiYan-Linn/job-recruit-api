@@ -65,7 +65,7 @@ public class Job {
 
 
     private LocalDate postedAt;
-
+    
     @ManyToOne
     @JoinColumn(name = "employer_id")
     private Employer employer;
@@ -75,6 +75,7 @@ public class Job {
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
     private List<Application> applications = new ArrayList<>();
 
+    private boolean closed;
     
     public enum JobType {
         FULL_TIME,

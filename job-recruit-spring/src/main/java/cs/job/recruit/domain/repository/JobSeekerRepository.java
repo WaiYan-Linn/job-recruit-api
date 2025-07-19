@@ -11,7 +11,10 @@ public interface JobSeekerRepository  extends BaseRepository<JobSeeker, UUID> {
 
 	Optional<JobSeeker> findByAccountId(UUID accountId);
 
+	Optional<JobSeeker> findOneByAccount(Account account);
+
 	Optional<JobSeeker> findOneByAccountEmail(String email);
+
 
 
 }

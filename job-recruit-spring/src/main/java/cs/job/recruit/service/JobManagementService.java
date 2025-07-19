@@ -19,12 +19,16 @@ import cs.job.recruit.api.input.JobSearch;
 import cs.job.recruit.api.output.JobDetails;
 import cs.job.recruit.api.output.JobDetailsResponse;
 import cs.job.recruit.api.output.PageResult;
+import cs.job.recruit.domain.entity.Account;
+import cs.job.recruit.domain.entity.Account.Role;
 import cs.job.recruit.domain.entity.Application;
 import cs.job.recruit.domain.entity.Job;
 import cs.job.recruit.domain.entity.JobSeeker;
+import cs.job.recruit.domain.repository.AccountRepository;
 import cs.job.recruit.domain.repository.ApplicationRepository;
 import cs.job.recruit.domain.repository.JobRepository;
 import cs.job.recruit.domain.repository.JobSeekerRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -37,6 +41,7 @@ public class JobManagementService {
 	private final JobRepository jobRepository;
 	private final LoginMemberService loginMemberService;
 	private final JobSeekerRepository jobSeekerRepository;
+	private final AccountRepository accountRepository;
 	private final ApplicationRepository applicationRepository;
 
 	public PageResult<JobDetails> search(JobSearch search, int page, int size) {
@@ -72,6 +77,7 @@ public class JobManagementService {
 		var entity = request.entity();
 		entity.setEmployer(employer);
 		entity.setPostedAt(LocalDate.now()); // optional: set post date
+		entity.setClosed(false);
 		var saved = jobRepository.save(entity);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(saved.getId()); // or a DTO
@@ -160,47 +166,70 @@ public class JobManagementService {
 	}
 
 	public PageResult<JobDetailsResponse> searchWithApplyStatus(JobSearch search, int page, int size, String email) {
-	    // 1. Perform normal search
+	    // 1. Perform normal job search
 	    PageResult<JobDetails> jobPage = search(search, page, size);
-	    
+
+	    // 2. If not logged in, return basic results
 	    if (email == null) {
 	        List<JobDetailsResponse> defaultList = jobPage.contents().stream()
-	            .map(job -> new JobDetailsResponse(job, false))
+	            .map(job -> new JobDetailsResponse(job, false, isOverDeadline(job)))
 	            .toList();
 
-	        return new PageResult<>(
-	            defaultList,
-	            jobPage.totalItems(),
-	            jobPage.size(),
-	            jobPage.currentPage()
-	        );
+	        return new PageResult<>(defaultList, jobPage.totalItems(), jobPage.size(), jobPage.currentPage());
 	    }
 
-	    // 2. Get job seeker
-	    JobSeeker seeker = jobSeekerRepository
-	        .findOneByAccountEmail(email)
-	        .orElseThrow(() -> new IllegalStateException("JobSeeker not found"));
+	    // 3. Get Account and Role
+	    Account account = accountRepository.findOneByEmail(email)
+	        .orElseThrow(() -> new RuntimeException("Account not found"));
 
-	    // 3. Extract job IDs
+	    // 4. If user is EMPLOYER or ADMIN, return basic results
+	    if (account.getRole() != Role.JOBSEEKER) {
+	        List<JobDetailsResponse> defaultList = jobPage.contents().stream()
+	            .map(job -> new JobDetailsResponse(job, false, isOverDeadline(job)))
+	            .toList();
+
+	        return new PageResult<>(defaultList, jobPage.totalItems(), jobPage.size(), jobPage.currentPage());
+	    }
+
+	    // 5. Only for JOBSEEKER, get JobSeeker entity
+	    JobSeeker jobSeeker = jobSeekerRepository.findOneByAccount(account)
+	        .orElseThrow(() -> new RuntimeException("JobSeeker profile not found"));
+
+	    // 6. Get job IDs from results
 	    List<Long> jobIds = jobPage.contents().stream()
 	        .map(JobDetails::id)
 	        .toList();
 
-	    // 4. Find applications by seeker and job IDs
+	    // 7. Get job applications for current seeker
 	    List<Application> applications = applicationRepository
-	        .findByJobSeekerAndJobIdIn(seeker, jobIds);
+	        .findByJobSeekerAndJobIdIn(jobSeeker, jobIds);
 
 	    Set<Long> appliedJobIds = applications.stream()
 	        .map(app -> app.getJob().getId())
 	        .collect(Collectors.toSet());
 
-	    // 5. Wrap with hasApplied
+	    // 8. Wrap each job with hasApplied + overDeadline
 	    List<JobDetailsResponse> wrappedList = jobPage.contents().stream()
-	        .map(job -> new JobDetailsResponse(job, appliedJobIds.contains(job.id())))
+	        .map(job -> new JobDetailsResponse(
+	            job,
+	            appliedJobIds.contains(job.id()),
+	            isOverDeadline(job)
+	        ))
 	        .toList();
 
-	    return new PageResult<>(wrappedList,jobPage.totalItems() ,jobPage.size(), jobPage.currentPage());
+	    return new PageResult<>(wrappedList, jobPage.totalItems(), jobPage.size(), jobPage.currentPage());
 	}
 
+	// Utility method to determine if job is past its deadline
+	private boolean isOverDeadline(JobDetails job) {
+	    return job.deadline().isBefore(LocalDate.now());
+	}
 
+	 public Job closeJob(Long jobId) {
+	        Job job = jobRepository.findById(jobId)
+	                .orElseThrow(() -> new EntityNotFoundException("Job not found with id: " + jobId));
+
+	        job.setClosed(true);
+	        return jobRepository.save(job);
+	    }
 }
