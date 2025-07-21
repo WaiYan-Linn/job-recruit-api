@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import cs.job.recruit.api.input.InterviewRequest;
 import cs.job.recruit.api.input.UpdateEmployerRequest;
 import cs.job.recruit.api.output.ApplicationResponseDto;
 import cs.job.recruit.api.output.EmployerCandidateViewDto;
 import cs.job.recruit.api.output.EmployerDetails;
 import cs.job.recruit.api.output.PageResult;
 import cs.job.recruit.service.EmployerService;
+import cs.job.recruit.service.InterviewService;
 
 @RestController
 @RequestMapping("employer")
@@ -33,6 +35,10 @@ public class EmployerController {
 
     @Autowired
     private EmployerService employerService;
+    
+    @Autowired
+    private InterviewService interviewService;
+    
     @GetMapping("/all")
     public PageResult<EmployerDetails> getEmployerDetails(
             @RequestParam(required = false) String name,
@@ -110,6 +116,18 @@ public class EmployerController {
         employerService.updateApplicationStatus(id, status, employerEmail);
         return ResponseEntity.ok().build();
     }
+    
+    @PostMapping("/applications/{id}/interview")
+    public ResponseEntity<Void> scheduleInterview(
+            @PathVariable Long id,
+            @RequestBody InterviewRequest request,
+            Authentication authentication) {
+
+        String employerEmail = authentication.getName();
+        interviewService.scheduleInterview(id, request, employerEmail);
+        return ResponseEntity.ok().build();
+    }
+
 
    
 

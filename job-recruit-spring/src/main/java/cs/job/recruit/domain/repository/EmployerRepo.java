@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import cs.job.recruit.api.output.EmployerDetails;
-import cs.job.recruit.api.output.JobDetails;
 import cs.job.recruit.domain.BaseRepository;
 import cs.job.recruit.domain.entity.Account;
 import cs.job.recruit.domain.entity.Employer;

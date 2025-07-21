@@ -1,4 +1,4 @@
-insert into Account(id,email,password,role,phone,address,activated) values ( '11111111-1111-1111-1111-111111111111','waiyan@gmail.com','$2a$10$yxOkpztjvGkiHrNdQoxkr.GEB9I/HZOgRHJ8PZR1.fi9B5xqI2P/q','JOBSEEKER','09778206157','Building 7, Aung San Road, Kamayut Township, Yangon',true);
+insert into Account(id,email,password,role,phone,address,activated) values ( '11111111-1111-1111-1111-111111111111','wayonlinn@gmail.com','$2a$10$yxOkpztjvGkiHrNdQoxkr.GEB9I/HZOgRHJ8PZR1.fi9B5xqI2P/q','JOBSEEKER','09778206157','Building 7, Aung San Road, Kamayut Township, Yangon',true);
 insert into Account(id,email,password,role,phone,address,activated) values ( '00000000-0000-0000-0000-000000000000','htetaung@gmail.com','$2a$10$yxOkpztjvGkiHrNdQoxkr.GEB9I/HZOgRHJ8PZR1.fi9B5xqI2P/q','JOBSEEKER','09779206158','Building 9, Htike San Road, Sanchaung Township, Yangon',true);
 
 insert into Account(id,email,password,role,phone,address,activated) values ( '22222222-2222-2222-2222-222222222222','lotto@gmail.com','$2a$10$qZeq7Kl6WPNTyMXeueK3sORJDAWtN92ZsKj4v6Ipe5rr9EEAdshFe','EMPLOYER','09985708315','Room 305, Golden Plaza, Pyay Road, Sanchaung Township, Yangon',true);
