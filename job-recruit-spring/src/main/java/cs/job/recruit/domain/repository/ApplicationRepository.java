@@ -16,8 +16,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
 	boolean existsByJobSeekerAndJob(JobSeeker jobSeeker, Job job);
 
-	List<Application> findByJobSeekerId(UUID id);
-
 	List<Application> findByJobSeekerAndJobIdIn(JobSeeker seeker, List<Long> jobIds);
 
 	@Query("SELECT a FROM Application a JOIN FETCH a.jobSeeker js JOIN FETCH js.account acc WHERE a.job.id = :jobId")
@@ -46,5 +44,29 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 	List<Application> findByJobIdOrderByAppliedAtDesc(Long jobId);
 
 	List<Application> findByStatusOrderByAppliedAtDesc(Status status);
+	
+	List<Application> findByJobSeekerId(UUID id);
+	
+	@Query("""
+			 SELECT a FROM Application a
+		    JOIN FETCH a.job j
+		    JOIN FETCH j.employer e
+		    JOIN FETCH a.jobSeeker js
+			LEFT JOIN FETCH a.interview i
+		    WHERE js.id = :jobSeekerId
+			""")
+	List<Application> findAllByJobSeekerId(UUID jobSeekerId);
+	
+	@Query("""
+				SELECT a FROM Application a
+			    JOIN FETCH a.job j
+			    JOIN FETCH j.employer e
+			    JOIN FETCH a.jobSeeker js
+			    LEFT JOIN FETCH a.interview i
+			    WHERE js.id = :jobSeekerId
+			""")
+	Application findOneByJobSeekerId(UUID jobSeekerId);
+
+
 
 }
