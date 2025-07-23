@@ -10,7 +10,6 @@ import cs.job.recruit.domain.entity.Account;
 import cs.job.recruit.domain.entity.Employer;
 import cs.job.recruit.domain.entity.JobSeeker;
 import cs.job.recruit.domain.repository.AccountRepository;
-import cs.job.recruit.utils.ApiBusinessException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,7 +23,7 @@ public class MemberSignUpService {
 	public SignUpResult signUp(SignUpForm form) {
 		
 		if(accountRepo.findOneByEmail(form.email()).isPresent()) {
-			throw new ApiBusinessException("Your email has already been used.");
+			throw new IllegalArgumentException("Your email has already been used.");
 		}
 		  Account account = new Account();
 		  	account.setPhone(form.phone());

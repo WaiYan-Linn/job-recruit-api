@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import cs.job.recruit.domain.entity.Application;
+import cs.job.recruit.domain.entity.Application.Status;
 import cs.job.recruit.domain.entity.Job;
 import cs.job.recruit.domain.entity.JobSeeker;
 
@@ -41,5 +42,9 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 		    WHERE e.id = :employerId
 		""")
 	Application findOneByEmployerId(@Param("employerId") UUID employerId);
+
+	List<Application> findByJobIdOrderByAppliedAtDesc(Long jobId);
+
+	List<Application> findByStatusOrderByAppliedAtDesc(Status status);
 
 }
