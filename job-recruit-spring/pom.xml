@@ -70,6 +70,11 @@
 			<artifactId>hibernate-jpamodelgen</artifactId>
 			<optional>false</optional>
 		</dependency>
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>java-dotenv</artifactId>
+			<version>5.2.2</version> <!-- Use the latest version -->
+		</dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -80,12 +85,6 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>io.github.cdimascio</groupId>
-			<artifactId>dotenv-java</artifactId>
-			<version>3.0.0</version>
 		</dependency>
 
 

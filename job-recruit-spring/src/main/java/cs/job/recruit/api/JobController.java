@@ -22,7 +22,6 @@ import cs.job.recruit.api.input.JobSearch;
 import cs.job.recruit.api.output.JobDetails;
 import cs.job.recruit.api.output.JobDetailsResponse;
 import cs.job.recruit.api.output.PageResult;
-import cs.job.recruit.domain.entity.Job;
 import cs.job.recruit.service.JobManagementService;
 
 @RestController
@@ -44,6 +43,7 @@ public class JobController {
 		return service.searchWithApplyStatus(search, page, size, null);
 
 	}
+	
 
 	@GetMapping("/salaries")
 	PageResult<JobDetails> searchByMaxSalaries(JobSearch search,

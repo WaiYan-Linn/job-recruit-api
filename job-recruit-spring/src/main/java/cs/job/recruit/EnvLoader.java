@@ -1,43 +1,37 @@
 package cs.job.recruit;
 
-import org.springframework.context.annotation.Configuration;
 import io.github.cdimascio.dotenv.Dotenv;
-import jakarta.annotation.PostConstruct;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 
-@Configuration
-public class EnvLoader {
+import java.util.HashMap;
+import java.util.Map;
 
-	@PostConstruct
-	public void load() {
-	    System.out.println("✅ EnvLoader is running...");
+public class EnvLoader implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-	    Dotenv dotenv = Dotenv.configure()
-	        .ignoreIfMissing()
-	        .load();
+    @Override
+    public void initialize(ConfigurableApplicationContext context) {
+    	Dotenv dotenv = Dotenv.configure()
+    		    .filename(".env")
+    		    .ignoreIfMissing()
+    		    .load();
 
-	    String mailUsername = dotenv.get("MAIL_USERNAME");
-	    String mailPassword = dotenv.get("MAIL_PASSWORD");
-	    
-	    
+        Map<String, Object> envMap = new HashMap<>();
+        String username = dotenv.get("MAIL_USERNAME");
+        String password = dotenv.get("MAIL_PASSWORD");
 
-	    if (mailUsername != null) {
-	        System.setProperty("MAIL_USERNAME", mailUsername);
-	    }
-	    if (mailPassword != null) {
-	        System.setProperty("MAIL_PASSWORD", mailPassword);
-	    }
-	    
-	    System.out.println(mailUsername+ mailPassword);
+        if (username != null) envMap.put("USERNAME", username);
+        if (password != null) envMap.put("PASSWORD", password);
 
-	    if (mailUsername == null) {
-	        System.err.println("❌ MAIL_USERNAME is missing in .env");
-	    }
-	    if (mailPassword == null) {
-	        System.err.println("❌ MAIL_PASSWORD is missing in .env");
-	    } else {
-	        System.out.println("✅ MAIL_USERNAME and MAIL_PASSWORD loaded");
-	    }
-	}
+        System.out.println("USERNAME = " + username);
+        System.out.println("USERNAME length = " + username.length());
 
+        ConfigurableEnvironment environment = context.getEnvironment();
+        environment.getPropertySources().addFirst(new MapPropertySource("dotenv", envMap));
+
+        System.out.println("[DotenvInitializer] Loaded USERNAME and PASSWORD from .env"
+        		+ username+ password);
+    }
 }
