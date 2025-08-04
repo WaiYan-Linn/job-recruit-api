@@ -18,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import cs.job.recruit.api.input.JobSeekerUpdateForm;
 import cs.job.recruit.api.output.ApplicationInfo;
-import cs.job.recruit.api.output.ApplicationResponseDto;
-import cs.job.recruit.api.output.EmployerCandidateViewDto;
 import cs.job.recruit.api.output.JobSeekerDetails;
 import cs.job.recruit.service.JobSeekerService;
 
@@ -67,11 +65,9 @@ public class JobSeekerController {
 	}
 	
 	@GetMapping("/application/{applicationId}")
-	public ResponseEntity<ApplicationInfo> getApplicationDetails(@PathVariable Long applicationId,
-			Authentication authentication) {
+	public ResponseEntity<ApplicationInfo> getApplicationDetails(@PathVariable Long applicationId) {
 
-		String jobSeekerEmail = authentication.getName();
-		ApplicationInfo applications = jobSeekerService.getApplicationsDetails(jobSeekerEmail, applicationId);
+		ApplicationInfo applications = jobSeekerService.getApplicationsDetails(applicationId);
 		return ResponseEntity.ok(applications);
 	}
     

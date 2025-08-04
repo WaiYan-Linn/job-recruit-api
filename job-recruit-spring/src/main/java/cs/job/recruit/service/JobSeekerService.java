@@ -146,11 +146,9 @@ public class JobSeekerService {
 	}
 
 
-	public ApplicationInfo getApplicationsDetails(String jobSeekerEmail, Long applicationId) {
-	    JobSeeker jobSeeker = jobSeekerRepository.findOneByAccountEmail(jobSeekerEmail)
-	            .orElseThrow(() -> new RuntimeException("JobSeeker not found"));
-
-	    Application application = applicationRepository.findOneByJobSeekerId(jobSeeker.getId());
+	public ApplicationInfo getApplicationsDetails(Long applicationId) {
+	    
+	    Application application = applicationRepository.findById(applicationId).orElse(null);
 
 	    Job job = application.getJob();
 	    Employer employer = job.getEmployer();

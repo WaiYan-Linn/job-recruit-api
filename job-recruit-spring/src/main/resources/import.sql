@@ -38,7 +38,7 @@ INSERT INTO job_seeker_skills (job_seeker_id, skills) VALUES ('11111111-1111-111
 INSERT INTO job_seeker_skills (job_seeker_id, skills) VALUES('11111111-1111-1111-1111-111111111111', 'Docker');
 INSERT INTO job_seeker_skills (job_seeker_id, skills) VALUES ('11111111-1111-1111-1111-111111111111', 'Git');
 
-insert into job_seeker(account_id,personal_name,profile_picture_url,profile_summary,date_of_birth) values ( '00000000-0000-0000-0000-000000000000','Htet Aung','/pictures/htetaung.jpg','Highly active senior software engineer with experience in JavaScript,Java,React, Spring Boot, and RESTful API development. Willing to learn more about backend engineering and learning cloud technologies.','1999-03-21');
+insert into job_seeker(account_id,personal_name,profile_picture_url,profile_summary,date_of_birth) values ( '00000000-0000-0000-0000-000000000000','Htet Lwin','/pictures/htetaung.jpg','Highly active senior software engineer with experience in JavaScript,Java,React, Spring Boot, and RESTful API development. Willing to learn more about backend engineering and learning cloud technologies.','1999-03-21');
 INSERT INTO job_seeker_skills (job_seeker_id, skills) VALUES ('00000000-0000-0000-0000-000000000000', 'Java');
 INSERT INTO job_seeker_skills (job_seeker_id, skills) VALUES ('00000000-0000-0000-0000-000000000000', 'Spring Boot');
 INSERT INTO job_seeker_skills (job_seeker_id, skills) VALUES ('00000000-0000-0000-0000-000000000000', 'PostgreSQL');
@@ -46,7 +46,7 @@ INSERT INTO job_seeker_skills (job_seeker_id, skills) VALUES('00000000-0000-0000
 INSERT INTO job_seeker_skills (job_seeker_id, skills) VALUES ('00000000-0000-0000-0000-000000000000', 'JavaScript');
 
 INSERT INTO application (applied_at,id,job_id,job_seeker_account_id,resume_url,status) VALUES ('2025-07-13 13:01:32.118065','1','8','11111111-1111-1111-1111-111111111111','resume_waiyan@gmail.com_1752388292111','NEW');
-INSERT INTO application (applied_at,id,job_id,job_seeker_account_id,resume_url,status) VALUES ('2025-07-18 15:01:32.118070','2','1','00000000-0000-0000-0000-000000000000','resume_htetaung@gmail.com_1752388292110','NEW');
+INSERT INTO application (applied_at,id,job_id,job_seeker_account_id,resume_url,status) VALUES ('2025-07-18 15:01:32.118070','2','1','00000000-0000-0000-0000-000000000000','resume_htetlwin@gmail.com_1752388292110','NEW');
 
 SELECT setval('job_id_seq', (SELECT MAX(id) FROM job));
 SELECT setval('application_id_seq', (SELECT MAX(id) FROM application));

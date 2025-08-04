@@ -163,8 +163,7 @@ public class InterviewService {
                 data.getLocation(),
                 data.getNotes()
             ))
-            .orElseThrow(() -> new EntityNotFoundException("Interview not found with ID: " + id));
-    }
+            .orElse(new InterviewRequest("", "", ""));    }
 
 
 

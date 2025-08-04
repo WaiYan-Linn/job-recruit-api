@@ -147,23 +147,28 @@ public class JobManagementService {
 	}
 
 	private Function<CriteriaBuilder, CriteriaQuery<JobDetails>> maxSalaryQueryFunc(JobSearch search) {
-		return cb -> {
-			var cq = cb.createQuery(JobDetails.class);
-			var root = cq.from(Job.class);
-			JobDetails.select(cb, cq, root);
+	    return cb -> {
+	        var cq = cb.createQuery(JobDetails.class);
+	        var root = cq.from(Job.class);
+	        JobDetails.select(cb, cq, root);
 
-		
+	        // Create deadline predicate
+	        Predicate deadlinePredicate = cb.greaterThanOrEqualTo(root.get("deadline"), LocalDate.now());
 
-			// Create deadline predicate
-			Predicate deadlinePredicate = cb.greaterThanOrEqualTo(root.get("deadline"), LocalDate.now());
+	        // Exclude closed = true
+	        Predicate notClosedPredicate = cb.or(
+	            cb.isFalse(root.get("closed")),
+	            cb.isNull(root.get("closed")) // optional, in case closed can be null
+	        );
 
-			
-			// Apply where clause
-			cq.where(cb.and(deadlinePredicate)).orderBy(cb.desc(root.get("salaryMax")));
+	        // Combine all
+	        cq.where(cb.and(deadlinePredicate, notClosedPredicate))
+	          .orderBy(cb.desc(root.get("salaryMax")));
 
-			return cq;
-		};
+	        return cq;
+	    };
 	}
+
 
 	public PageResult<JobDetailsResponse> searchWithApplyStatus(JobSearch search, int page, int size, String email) {
 	    // 1. Perform normal job search
